@@ -49,9 +49,6 @@ public struct MockableMacro: PeerMacro {
                     type: element.type
                 )
             }
-//            .filter {
-//                $0.type.isProtocol()
-//            }
         
         var mutatingFunc: FunctionDeclSyntax = FunctionDeclSyntax(
             leadingTrivia: [],
@@ -63,8 +60,8 @@ public struct MockableMacro: PeerMacro {
                     parameters: FunctionParameterListSyntax {
                         params.map {
                             .init(
-                                firstName: "\(raw: $0.firstName)",
-                                secondName: "\(raw: $0.secondName)",
+                                firstName: "\($0.firstName)",
+                                secondName: "\($0.secondName)",
                                 type: $0.type
                             )
                         }
@@ -83,7 +80,6 @@ public struct MockableMacro: PeerMacro {
         
         if type.parameters.isEmpty {
             mutatingFunc.body = CodeBlockSyntax(
-                stringLiteral:
                 """
                 {
                     let fulfill = expectation(description: "expect \(identifier)")
@@ -97,7 +93,6 @@ public struct MockableMacro: PeerMacro {
         } else {
             // check each
             mutatingFunc.body = CodeBlockSyntax(
-                stringLiteral:
                 """
                 {
                     let fulfill = expectation(description: "expect \(identifier)")
