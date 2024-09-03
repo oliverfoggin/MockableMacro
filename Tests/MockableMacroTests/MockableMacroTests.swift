@@ -8,19 +8,20 @@ import MockableMacroMacros
 final class MockableMacroTests: XCTestCase {
     func testMockableWithParamsAndReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: false) {
+        assertMacro(["Mockable": MockableMacro.self], record: true) {
             """
-            @Mockable public var doThing: (_ value: String, _ other: Bool) -> Int
+            @Mockable public var doThing: (_ value: Blobber, _ other: Bool) -> Int
             """
         } expansion: {
             """
-            public var doThing: (_ value: String, _ other: Bool) -> Int
+            public var doThing: (_ value: Blobber, _ other: Bool) -> Int
 
-            public mutating func expectDoThing(value expectedValue: String, other expectedOther: Bool, returning returnValue: Int) {
+            public mutating func expectDoThing(value expectedValue: Blobber, other expectedOther: Bool, returning returnValue: Int)
+            {
                 let fulfill = expectation(description: "expect doThing")
                 self.doThing = { [self] value, other in
-                    if value == expectedValue,
-                    other == expectedOther {
+                    if isTheSameOrNotEquatable(value, expectedValue),
+                    isTheSameOrNotEquatable(other, expectedOther) {
                         fulfill()
                         return returnValue
                     } else {
@@ -37,7 +38,7 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithoutParamsAndReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: false) {
+        assertMacro(["Mockable": MockableMacro.self], record: true) {
             """
             @Mockable public var doThing: () -> Int
             """
@@ -45,7 +46,8 @@ final class MockableMacroTests: XCTestCase {
             """
             public var doThing: () -> Int
 
-            public mutating func expectDoThing(returning returnValue: Int) {
+            public mutating func expectDoThing(returning returnValue: Int)
+            {
                 let fulfill = expectation(description: "expect doThing")
                 self.doThing = {
                     fulfill()
@@ -60,7 +62,7 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: false) {
+        assertMacro(["Mockable": MockableMacro.self], record: true) {
             """
             @Mockable public var doThing: (_ value: String, _ other: Bool) -> Void
             """
@@ -68,11 +70,12 @@ final class MockableMacroTests: XCTestCase {
             """
             public var doThing: (_ value: String, _ other: Bool) -> Void
 
-            public mutating func expectDoThing(value expectedValue: String, other expectedOther: Bool) {
+            public mutating func expectDoThing(value expectedValue: String, other expectedOther: Bool)
+            {
                 let fulfill = expectation(description: "expect doThing")
                 self.doThing = { [self] value, other in
-                    if value == expectedValue,
-                    other == expectedOther {
+                    if isTheSameOrNotEquatable(value, expectedValue),
+                    isTheSameOrNotEquatable(other, expectedOther) {
                         fulfill()
 
                     } else {
@@ -89,7 +92,7 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithoutParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: false) {
+        assertMacro(["Mockable": MockableMacro.self], record: true) {
             """
             @Mockable public var doThing: () -> Void
             """
@@ -97,7 +100,8 @@ final class MockableMacroTests: XCTestCase {
             """
             public var doThing: () -> Void
 
-            public mutating func expectDoThing() {
+            public mutating func expectDoThing()
+            {
                 let fulfill = expectation(description: "expect doThing")
                 self.doThing = {
                     fulfill()
@@ -112,7 +116,7 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithUnnamedParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: false) {
+        assertMacro(["Mockable": MockableMacro.self], record: true) {
             """
             @Mockable public var doThing: (_ named: String, Bool) -> Void
             """
@@ -120,11 +124,12 @@ final class MockableMacroTests: XCTestCase {
             """
             public var doThing: (_ named: String, Bool) -> Void
 
-            public mutating func expectDoThing(named expectedNamed: String, bool0 expectedBool0: Bool) {
+            public mutating func expectDoThing(named expectedNamed: String, bool0 expectedBool0: Bool)
+            {
                 let fulfill = expectation(description: "expect doThing")
                 self.doThing = { [self] named, bool0 in
-                    if named == expectedNamed,
-                    bool0 == expectedBool0 {
+                    if isTheSameOrNotEquatable(named, expectedNamed),
+                    isTheSameOrNotEquatable(bool0, expectedBool0) {
                         fulfill()
 
                     } else {

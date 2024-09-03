@@ -18,4 +18,13 @@ final class ClientTests: XCTestCase {
         
         XCTAssertEqual(sut.doThing(with: "abc", and: true, int: 42), 32.0)
     }
+    
+    func testDoSomething() {
+        var dependency = MyDependency.test
+        dependency.expectDoSomething(foo0: Foo(string: "Hello"))
+        
+        let sut = Feature(dependency: dependency)
+        
+        sut.doSomething(Foo(string: "Goodbye"))
+    }
 }
