@@ -8,9 +8,9 @@ import MockableMacroMacros
 final class MockableMacroTests: XCTestCase {
     func testMockableWithParamsAndReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @Mockable public var doThing: (_ value: Blobber, _ other: Bool) -> Int
+            @MockableEndpoint public var doThing: (_ value: Blobber, _ other: Bool) -> Int
             """
         } expansion: {
             """
@@ -32,15 +32,16 @@ final class MockableMacroTests: XCTestCase {
             }
             """
         }
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
     
     func testMockableWithoutParamsAndReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @Mockable public var doThing: () -> Int
+            @MockableEndpoint public var doThing: () -> Int
             """
         } expansion: {
             """
@@ -56,15 +57,16 @@ final class MockableMacroTests: XCTestCase {
             }
             """
         }
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
     
     func testMockableWithParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @Mockable public var doThing: (_ value: String, _ other: Bool) -> Void
+            @MockableEndpoint public var doThing: (_ value: String, _ other: Bool) -> Void
             """
         } expansion: {
             """
@@ -86,15 +88,16 @@ final class MockableMacroTests: XCTestCase {
             }
             """
         }
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
     
     func testMockableWithoutParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @Mockable public var doThing: () -> Void
+            @MockableEndpoint public var doThing: () -> Void
             """
         } expansion: {
             """
@@ -110,15 +113,16 @@ final class MockableMacroTests: XCTestCase {
             }
             """
         }
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
     
     func testMockableWithUnnamedParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @Mockable public var doThing: (_ named: String, Bool) -> Void
+            @MockableEndpoint public var doThing: (_ named: String, Bool) -> Void
             """
         } expansion: {
             """
@@ -140,6 +144,7 @@ final class MockableMacroTests: XCTestCase {
             }
             """
         }
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }

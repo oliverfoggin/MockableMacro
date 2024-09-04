@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  MockableMacro
-//
-//  Created by Oliver Foggin on 31/08/2024.
-//
-
 import Foundation
 @testable import MockableMacroClient
 import XCTest

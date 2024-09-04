@@ -8,7 +8,7 @@ enum FooBarError: Error {
     case onlyApplicaableToVariable
 }
 
-public struct MockableMacro: PeerMacro {
+public struct MockableEndpointMacro: PeerMacro {
     public static func expansion(
         of node: SwiftSyntax.AttributeSyntax,
         providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
@@ -25,9 +25,6 @@ public struct MockableMacro: PeerMacro {
         guard varDecl.bindingSpecifier.text == "var" else {
             throw FooBarError.onlyApplicaableToVariable
         }
-        
-        var modifiers = varDecl.modifiers
-        modifiers.append(.init(name: .keyword(.mutating)))
         
         let params = parameters(of: function)
         let returnParam = [
@@ -58,7 +55,6 @@ public struct MockableMacro: PeerMacro {
                 }
                 """
         } else {
-            // check each
             functionBody =
                 """
                 {
