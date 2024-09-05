@@ -8,7 +8,7 @@ import MockableMacroMacros
 final class MockableClientMacroTests: XCTestCase {
     func testMockable() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableClientMacro.self], record: true) {
+        assertMacro(["Mockable": MockableClientMacro.self], record: false) {
             """
             @Mockable
             struct Foo {

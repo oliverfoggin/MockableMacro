@@ -8,7 +8,7 @@ import MockableMacroMacros
 final class MockableMacroTests: XCTestCase {
     func testMockableWithParamsAndReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
             """
             @MockableEndpoint public var doThing: (_ value: Blobber, _ other: Bool) -> Int
             """
@@ -39,7 +39,7 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithoutParamsAndReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
             """
             @MockableEndpoint public var doThing: () -> Int
             """
@@ -64,7 +64,7 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
             """
             @MockableEndpoint public var doThing: (_ value: String, _ other: Bool) -> Void
             """
@@ -95,7 +95,7 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithoutParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
             """
             @MockableEndpoint public var doThing: () -> Void
             """
@@ -120,7 +120,7 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithUnnamedParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
             """
             @MockableEndpoint public var doThing: (_ named: String, Bool) -> Void
             """

@@ -42,11 +42,11 @@ var dependency = MyDependency(
     good: { _ in "" }
 )
 
-//dependency.expectDoOtherThing(with: "abc", and: true, int0: 42, returning: 7)
+dependency.expectDoOtherThing(with: "abc", and: true, int0: 42, returning: 7)
 
 print(dependency.doOtherThing("abc", true, 42))
 
-//dependency.expectDoSomething(foo0: .init(string: "Goodbye"))
+dependency.expectDoSomething(foo0: .init(string: "Goodbye"))
 
 dependency.doSomething(.init(string: "Hello"))
 
