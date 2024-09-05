@@ -2,6 +2,7 @@ import SwiftCompilerPlugin
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
+import Foundation
 
 enum FooBarError: Error {
     case onlyApplicableToFunctionType
@@ -105,7 +106,7 @@ public struct MockableEndpointMacro: PeerMacro {
                 if let secondName = element.secondName?.text {
                     name = secondName
                 } else {
-                    name = element.type.as(IdentifierTypeSyntax.self)!.name.text.lowercasedFirst() + "\(count)"
+                    name = typeNameFromElementType(element) + "\(count)"
                     
                     count += 1
                 }
@@ -116,6 +117,19 @@ public struct MockableEndpointMacro: PeerMacro {
                     type: element.type
                 )
             }
+    }
+    
+    private static func typeNameFromElementType(_ element: TupleTypeElementSyntax) -> String {
+        if let type = element.type.as(IdentifierTypeSyntax.self) {
+            return type.name.text.lowercasedFirst()
+        }
+        
+        if let type = element.type.as(OptionalTypeSyntax.self),
+            let wrappedType = type.wrappedType.as(IdentifierTypeSyntax.self) {
+            return wrappedType.name.text.lowercasedFirst()
+        }
+        
+        return UUID().uuidString
     }
 }
 

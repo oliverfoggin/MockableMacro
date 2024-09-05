@@ -10,23 +10,23 @@ final class MockableMacroTests: XCTestCase {
         #if canImport(MockableMacroMacros)
         assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @MockableEndpoint public var doThing: @Sendable (_ value: Blobber, _ other: Bool) -> Int
+            @MockableEndpoint public var doThing: @Sendable (_: Blobber?, _ other: Bool) -> Int
             """
         } expansion: {
             """
-            public var doThing: @Sendable (_ value: Blobber, _ other: Bool) -> Int
+            public var doThing: @Sendable (_: Blobber?, _ other: Bool) -> Int
 
-            public mutating func expectDoThing(value expectedValue: Blobber, other expectedOther: Bool, returning returnValue: Int)
+            public mutating func expectDoThing(blobber0 expectedBlobber0: Blobber?, other expectedOther: Bool, returning returnValue: Int)
             {
                 let fulfill = expectation(description: "expect doThing")
-                self.doThing = { [self] value, other in
-                    if isTheSameOrNotEquatable(value, expectedValue),
+                self.doThing = { [self] blobber0, other in
+                    if isTheSameOrNotEquatable(blobber0, expectedBlobber0),
                     isTheSameOrNotEquatable(other, expectedOther) {
                         fulfill()
                         return returnValue
                     } else {
                         return
-                        self.doThing(value, other)
+                        self.doThing(blobber0, other)
                     }
                 }
             }
@@ -39,13 +39,13 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithoutParamsAndReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @MockableEndpoint public var doThing: () -> Int
+            @MockableEndpoint public var doThing: @Sendable () -> Int
             """
         } expansion: {
             """
-            public var doThing: () -> Int
+            public var doThing: @Sendable () -> Int
 
             public mutating func expectDoThing(returning returnValue: Int)
             {
@@ -64,13 +64,13 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @MockableEndpoint public var doThing: (_ value: String, _ other: Bool) -> Void
+            @MockableEndpoint public var doThing: @Sendable (_ value: String, _ other: Bool) -> Void
             """
         } expansion: {
             """
-            public var doThing: (_ value: String, _ other: Bool) -> Void
+            public var doThing: @Sendable (_ value: String, _ other: Bool) -> Void
 
             public mutating func expectDoThing(value expectedValue: String, other expectedOther: Bool)
             {
@@ -95,13 +95,13 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithoutParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @MockableEndpoint public var doThing: () -> Void
+            @MockableEndpoint public var doThing: @Sendable () -> Void
             """
         } expansion: {
             """
-            public var doThing: () -> Void
+            public var doThing: @Sendable () -> Void
 
             public mutating func expectDoThing()
             {
@@ -120,13 +120,13 @@ final class MockableMacroTests: XCTestCase {
     
     func testMockableWithUnnamedParamsAndNoReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @MockableEndpoint public var doThing: (_ named: String, Bool) -> Void
+            @MockableEndpoint public var doThing: @Sendable (_ named: String, Bool) -> Void
             """
         } expansion: {
             """
-            public var doThing: (_ named: String, Bool) -> Void
+            public var doThing: @Sendable (_ named: String, Bool) -> Void
 
             public mutating func expectDoThing(named expectedNamed: String, bool0 expectedBool0: Bool)
             {
