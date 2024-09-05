@@ -17,7 +17,7 @@ public struct MockableEndpointMacro: PeerMacro {
         guard let varDecl = declaration.as(VariableDeclSyntax.self),
               let binding = varDecl.bindings.first,
               let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text,
-              let function = binding.typeAnnotation?.type.as(FunctionTypeSyntax.self)
+              let function = functionFromBinding(binding: binding)
         else {
             throw FooBarError.onlyApplicableToFunctionType
         }
@@ -78,6 +78,18 @@ public struct MockableEndpointMacro: PeerMacro {
             \(raw: functionBody)
             """
         )]
+    }
+    
+    private static func functionFromBinding(binding: PatternBindingSyntax) -> FunctionTypeSyntax? {
+        guard let typeAnnotation = binding.typeAnnotation else {
+            return nil
+        }
+        
+        if let attributedType = typeAnnotation.type.as(AttributedTypeSyntax.self) {
+            return attributedType.baseType.as(FunctionTypeSyntax.self)
+        }
+        
+        return typeAnnotation.type.as(FunctionTypeSyntax.self)
     }
     
     private static func parameters(of functionType: FunctionTypeSyntax) -> [ParameterDefinition] {

@@ -15,10 +15,6 @@ final class MockableClientMacroTests: XCTestCase {
                 public var int: @Sendable (_ forKey: Key) -> Int = { _ in 0 }
             }
             """
-        } diagnostics: {
-            """
-
-            """
         } expansion: {
             """
             struct Foo {

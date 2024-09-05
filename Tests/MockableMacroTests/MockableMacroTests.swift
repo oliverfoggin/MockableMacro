@@ -8,13 +8,13 @@ import MockableMacroMacros
 final class MockableMacroTests: XCTestCase {
     func testMockableWithParamsAndReturn() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: false) {
+        assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @MockableEndpoint public var doThing: (_ value: Blobber, _ other: Bool) -> Int
+            @MockableEndpoint public var doThing: @Sendable (_ value: Blobber, _ other: Bool) -> Int
             """
         } expansion: {
             """
-            public var doThing: (_ value: Blobber, _ other: Bool) -> Int
+            public var doThing: @Sendable (_ value: Blobber, _ other: Bool) -> Int
 
             public mutating func expectDoThing(value expectedValue: Blobber, other expectedOther: Bool, returning returnValue: Int)
             {
