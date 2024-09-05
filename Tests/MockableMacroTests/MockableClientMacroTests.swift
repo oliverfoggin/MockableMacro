@@ -8,19 +8,22 @@ import MockableMacroMacros
 final class MockableClientMacroTests: XCTestCase {
     func testMockable() throws {
         #if canImport(MockableMacroMacros)
-        assertMacro(["Mockable": MockableClientMacro.self], record: false) {
+        assertMacro(["Mockable": MockableClientMacro.self], record: true) {
             """
             @Mockable
             struct Foo {
-                var bad: (Int) -> String { { _ in "" } }
-                let good: (Int) -> String
+                public var int: @Sendable (_ forKey: Key) -> Int = { _ in 0 }
             }
+            """
+        } diagnostics: {
+            """
+
             """
         } expansion: {
             """
             struct Foo {
-                var bad: (Int) -> String { { _ in "" } }
-                let good: (Int) -> String
+                @MockableEndpoint
+                public var int: @Sendable (_ forKey: Key) -> Int = { _ in 0 }
             }
             """
         }

@@ -13,7 +13,7 @@ public struct MockableClientMacro: MemberAttributeMacro {
         
         guard let varDecl = member.as(VariableDeclSyntax.self),
               let binding = varDecl.bindings.first,
-              binding.typeAnnotation?.type.as(FunctionTypeSyntax.self) != nil
+              isValidBindingType(binding: binding)
         else {
             return []
         }
@@ -28,5 +28,17 @@ public struct MockableClientMacro: MemberAttributeMacro {
         }
         
         return ["@MockableEndpoint"]
+    }
+    
+    private static func isValidBindingType(binding: PatternBindingSyntax) -> Bool {
+        guard let typeAnnotation = binding.typeAnnotation else {
+            return false
+        }
+        
+        if let attributedType = typeAnnotation.type.as(AttributedTypeSyntax.self) {
+            return attributedType.baseType.is(FunctionTypeSyntax.self)
+        }
+        
+        return typeAnnotation.type.is(FunctionTypeSyntax.self)
     }
 }
