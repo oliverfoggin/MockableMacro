@@ -5,7 +5,7 @@ import XCTest
 final class ClientTests: XCTestCase {
     func testFeature() {
         var dependency = MyDependency.test
-        dependency.expectDoOtherThing(with: "abc", and: true, int0: 42, returning: 32.0)
+        dependency.expectDoOtherThing(with: "abc", and: true, 42, returning: 32.0)
         
         let sut = Feature(dependency: dependency)
         
@@ -14,7 +14,7 @@ final class ClientTests: XCTestCase {
     
     func testDoSomething() {
         var dependency = MyDependency.test
-        dependency.expectDoSomething(foo0: Foo(string: "Hello"))
+        dependency.expectDoSomething(Foo(string: "Hello"))
         
         let sut = Feature(dependency: dependency)
         

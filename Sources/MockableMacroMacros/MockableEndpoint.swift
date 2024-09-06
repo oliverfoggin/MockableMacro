@@ -60,13 +60,13 @@ public struct MockableEndpointMacro: PeerMacro {
                 """
                 {
                     let fulfill = expectation(description: "expect \(identifier)")
-                    self.\(identifier) = { [self] \(params.map(\.firstName).joined(separator: ", ")) in
-                        if \(params.map { "isTheSameOrNotEquatable(\($0.firstName), \($0.secondName))" }.joined(separator: ",\n")) {
+                    self.\(identifier) = { [self] \(params.map(\.inputParamName).joined(separator: ", ")) in
+                        if \(params.map { "isTheSameOrNotEquatable(\($0.inputParamName), \($0.secondName))" }.joined(separator: ",\n")) {
                             fulfill()
                             \(function.returnClause.isVoid ? "" : "return returnValue")
                         } else {
                             \(function.returnClause.isVoid ? "" : "return")
-                            self.\(identifier)(\(params.map(\.firstName).joined(separator: ", ")))
+                            self.\(identifier)(\(params.map(\.inputParamName).joined(separator: ", ")))
                         }
                     }
                 }
@@ -94,26 +94,15 @@ public struct MockableEndpointMacro: PeerMacro {
     }
     
     private static func parameters(of functionType: FunctionTypeSyntax) -> [ParameterDefinition] {
-        var count = 0
-        
-        return functionType.parameters
+        functionType.parameters
             .filter {
                 !$0.type.is(FunctionTypeSyntax.self)
             }
-            .map { element in
-                let name: String
-                
-                if let secondName = element.secondName?.text {
-                    name = secondName
-                } else {
-                    name = typeNameFromElementType(element) + "\(count)"
-                    
-                    count += 1
-                }
-                
-                return .init(
-                    firstName: name,
-                    secondName: "expected\(name.uppercasedFirst())",
+            .enumerated()
+            .map { (index, element) in
+                .init(
+                    firstName: element.secondName?.text ?? "_",
+                    secondName: "p\(index)",
                     type: element.type
                 )
             }
@@ -140,6 +129,10 @@ struct ParameterDefinition {
     
     var paramString: String {
         "\(firstName) \(secondName): \(type)"
+    }
+    
+    var inputParamName: String {
+        "i\(secondName)"
     }
 }
 

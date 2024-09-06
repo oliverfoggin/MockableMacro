@@ -10,23 +10,23 @@ final class MockableMacroTests: XCTestCase {
         #if canImport(MockableMacroMacros)
         assertMacro(["MockableEndpoint": MockableEndpointMacro.self], record: true) {
             """
-            @MockableEndpoint public var doThing: @Sendable (_: Blobber?, _ other: Bool) -> Int
+            @MockableEndpoint public var doThing: @Sendable (Any?, _ other: Bool) -> Int
             """
         } expansion: {
             """
-            public var doThing: @Sendable (_: Blobber?, _ other: Bool) -> Int
+            public var doThing: @Sendable (Any?, _ other: Bool) -> Int
 
-            public mutating func expectDoThing(blobber0 expectedBlobber0: Blobber?, other expectedOther: Bool, returning returnValue: Int)
+            public mutating func expectDoThing(_ p0: Any?, other p1: Bool, returning returnValue: Int)
             {
                 let fulfill = expectation(description: "expect doThing")
-                self.doThing = { [self] blobber0, other in
-                    if isTheSameOrNotEquatable(blobber0, expectedBlobber0),
-                    isTheSameOrNotEquatable(other, expectedOther) {
+                self.doThing = { [self] ip0, ip1 in
+                    if isTheSameOrNotEquatable(ip0, p0),
+                    isTheSameOrNotEquatable(ip1, p1) {
                         fulfill()
                         return returnValue
                     } else {
                         return
-                        self.doThing(blobber0, other)
+                        self.doThing(ip0, ip1)
                     }
                 }
             }
@@ -72,17 +72,17 @@ final class MockableMacroTests: XCTestCase {
             """
             public var doThing: @Sendable (_ value: String, _ other: Bool) -> Void
 
-            public mutating func expectDoThing(value expectedValue: String, other expectedOther: Bool)
+            public mutating func expectDoThing(value p0: String, other p1: Bool)
             {
                 let fulfill = expectation(description: "expect doThing")
-                self.doThing = { [self] value, other in
-                    if isTheSameOrNotEquatable(value, expectedValue),
-                    isTheSameOrNotEquatable(other, expectedOther) {
+                self.doThing = { [self] ip0, ip1 in
+                    if isTheSameOrNotEquatable(ip0, p0),
+                    isTheSameOrNotEquatable(ip1, p1) {
                         fulfill()
 
                     } else {
 
-                        self.doThing(value, other)
+                        self.doThing(ip0, ip1)
                     }
                 }
             }
@@ -128,17 +128,17 @@ final class MockableMacroTests: XCTestCase {
             """
             public var doThing: @Sendable (_ named: String, Bool) -> Void
 
-            public mutating func expectDoThing(named expectedNamed: String, bool0 expectedBool0: Bool)
+            public mutating func expectDoThing(named p0: String, _ p1: Bool)
             {
                 let fulfill = expectation(description: "expect doThing")
-                self.doThing = { [self] named, bool0 in
-                    if isTheSameOrNotEquatable(named, expectedNamed),
-                    isTheSameOrNotEquatable(bool0, expectedBool0) {
+                self.doThing = { [self] ip0, ip1 in
+                    if isTheSameOrNotEquatable(ip0, p0),
+                    isTheSameOrNotEquatable(ip1, p1) {
                         fulfill()
 
                     } else {
 
-                        self.doThing(named, bool0)
+                        self.doThing(ip0, ip1)
                     }
                 }
             }
