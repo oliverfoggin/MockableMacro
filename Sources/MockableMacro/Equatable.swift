@@ -7,8 +7,9 @@ public extension Equatable {
   }
 }
 
-public func isTheSameOrNotEquatable<T>(_ lhs: T, _ rhs: T) -> Bool {
-    guard let left = lhs as? any Equatable, let right = rhs as? any Equatable else {
+public func isTheSameOrNotEquatable <T> (_ lhs :T , _ rhs: T) ->Bool{
+    guard let left = lhs as? any Equatable,
+          let right = rhs as? any Equatable else {
         return true
     }
     return left.isEqual(right)

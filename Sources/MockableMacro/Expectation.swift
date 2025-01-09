@@ -1,7 +1,7 @@
 import Foundation
 
 // NB: Dynamically load XCTest to prevent leaking its symbols into our library code.
-public func expectation(description: String = "") -> () -> Void {
+public func expectation(description: String = "", count: Int = 1) -> () -> Void {
   #if canImport(ObjectiveC)
     guard
       let currentTestCase = _XCTCurrentTestCase(),
@@ -12,6 +12,7 @@ public func expectation(description: String = "") -> () -> Void {
     else {
       return {}
     }
+    expectation.setValue(count, forKey: "expectedFulfillmentCount")
     //  expectation.setValue(false, forKey: "assertForOverFulfill")
     var isFulfilled = false
     return {

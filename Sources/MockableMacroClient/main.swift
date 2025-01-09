@@ -1,45 +1,65 @@
 import MockableMacro
 
 struct Foo {
-    let string: String
+  let string: String
 }
 
 @Mockable
 struct MyDependency {
-    var string: String
-    var doThing: () -> Void
-    var doOtherThing: (_ with: String, _ and: Bool, Int) -> Float
-    var doSomething: (Foo) -> Void
-    var bad: (Int) -> String {
-        { _ in "" }
-    }
-    var good: (Int) -> String {
-        didSet { print("Foo") }
-    }
+  var string: String
+  var doThing: () -> Void
+  var doOtherThing: (_ with: String, _ and: Bool, Int) -> Float
+  var doSomething: (Foo) -> Void
+  var bad: (Int) -> String {
+    { _ in "" }
+  }
+  var good: (Int) -> String {
+    didSet { print("Foo") }
+  }
+  var doThrowingThing: () throws -> Void
+  var doThrowingThingWithParams: (Int) throws -> Void
+  var doThrowingThingWithParamsReturningValue: (Int) throws -> String
+  var doAsyncThrowingThing: () async throws -> Void
+  var doAsyncThrowingThingWithParams: (Int) async throws -> Void
+  var doAsyncThrowingThingWithParamsReturningValue: (Int) async throws -> String
 }
 
+struct DependencyError: Error {}
+
 extension MyDependency {
-    static var test: Self {
-        .init(
-            string: "",
-            doThing: {},
-            doOtherThing: { _, _, _ in 0.0 },
-            doSomething: { _ in },
-            good: { _ in "" }
-        )
-    }
+  static var test: Self {
+    .init(
+      string: "",
+      doThing: {},
+      doOtherThing: { _, _, _ in 0.0 },
+      doSomething: { _ in },
+      good: { _ in "" },
+      doThrowingThing: {},
+      doThrowingThingWithParams: { _ in },
+      doThrowingThingWithParamsReturningValue: { _ in "" },
+      doAsyncThrowingThing: { throw DependencyError() },
+      doAsyncThrowingThingWithParams: { _ in },
+      doAsyncThrowingThingWithParamsReturningValue: { _ in "" }
+    )
+  }
 }
 
 var dependency = MyDependency(
-    string: "",
-    doThing: { print("Hello!") },
-    doOtherThing: { with, and, int in
-        and ? Float(int) : -1
-    },
-    doSomething: { _ in
-        print("Foo")
-    },
-    good: { _ in "" }
+  string: "",
+  doThing: { print("Hello!") },
+  doOtherThing: { with, and, int in
+    and ? Float(int) : -1
+  },
+  doSomething: { _ in
+    print("Foo")
+  },
+  good: { _ in "" },
+  doThrowingThing: {},
+  doThrowingThingWithParams: { _ in },
+  doThrowingThingWithParamsReturningValue: { _ in "" },
+  doAsyncThrowingThing: {},
+  doAsyncThrowingThingWithParams: { _ in },
+  doAsyncThrowingThingWithParamsReturningValue: { _ in "" }
 )
 
 dependency.expectDoOtherThing(with: "abc", and: true, 42, returning: 7)
@@ -51,17 +71,21 @@ dependency.expectDoSomething(.init(string: "Goodbye"))
 dependency.doSomething(.init(string: "Hello"))
 
 struct Feature {
-    var dependency: MyDependency
-    
-    init(dependency: MyDependency) {
-        self.dependency = dependency
-    }
-    
-    func doThing(with: String, and: Bool, int: Int) -> Float {
-        dependency.doOtherThing(with, and, int)
-    }
-    
-    func doSomething(_ foo: Foo) {
-        dependency.doSomething(foo)
-    }
+  var dependency: MyDependency
+
+  init(dependency: MyDependency) {
+    self.dependency = dependency
+  }
+
+  func doThing(with: String, and: Bool, int: Int) -> Float {
+    dependency.doOtherThing(with, and, int)
+  }
+
+  func doSomething(_ foo: Foo) {
+    dependency.doSomething(foo)
+  }
+
+  func doThrowingThing() async throws {
+    try await dependency.doAsyncThrowingThing()
+  }
 }
