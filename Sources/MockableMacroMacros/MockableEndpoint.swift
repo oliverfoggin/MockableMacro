@@ -27,6 +27,8 @@ public struct MockableEndpointMacro: PeerMacro {
       throw FooBarError.onlyApplicaableToVariable
     }
 
+    let functionModifiers = varDecl.modifiers
+
     let params = parameters(of: function)
     let returnParam = [
       function.returnClause.isVoid ? nil : ParameterDefinition(
@@ -43,7 +45,7 @@ public struct MockableEndpointMacro: PeerMacro {
     let functionName = "expect\(identifier.uppercasedFirst())"
     let functionParams = "(\((params + returnParam).map(\.paramString).joined(separator: ", ")))"
 
-    let functionSignature = "public mutating func \(functionName)\(functionParams)"
+    let functionSignature = "\(functionModifiers) mutating func \(functionName)\(functionParams)"
 
     let functionBody: String
 
@@ -88,7 +90,7 @@ public struct MockableEndpointMacro: PeerMacro {
 
     let throwingFunctionSignature: String
     if isThrowing {
-      throwingFunctionSignature = "public mutating func \(functionName)\(throwingFunctionParams)"
+      throwingFunctionSignature = "\(functionModifiers) mutating func \(functionName)\(throwingFunctionParams)"
     } else {
       throwingFunctionSignature = ""
     }
